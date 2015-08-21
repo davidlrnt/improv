@@ -1,50 +1,67 @@
-// $( document ).ready(function(){
-// 	var randomPlaylist = shuffle(playlist);
-// 	console.log(randomPlaylist[0][0])
+	var randomPlaylist = shuffle(playlist);
+	console.log(randomPlaylist[0][0])
 
 
-//  // $('#video').attr('src',randomPlaylist[0][0]);  
 
-//  function onPlayerStateChange(event) {
-//  	console.log(event);
-//  } 
-//  function youTubeClipCallback(event) {
-//  	console.log(event);
-//  }
-// // <iframe width="640" height="360" src="'+randomPlaylist[0][0]+'" frameborder="0" allowfullscreen></iframe>
-// $('#container').html('<iframe id="ik_player_iframe" frameborder="0" height="315" src="http://www.youtube.com/embed/5EnL2WXsxNQ?enablejsapi=1" width="560"></iframe>')
+       // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+            console.log(document.getElementsByTagName('script')[0])
 
-//  // var iframe = "<iframe id='video' frameborder='0' src='"+ randomPlaylist[0][0] +"'allowfullscreen></iframe>";
-//  // $('#container').html(iframe)
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-// // $(function(){
-// //   $('#video').css({ width: $(window).innerWidth() + 'px', height: $(window).innerHeight() + 'px' });
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
 
-// //   $(window).resize(function(){
-// //     $('#video').css({ width: $(window).innerWidth() + 'px', height: $(window).innerHeight() + 'px' });
-// //   });
+    player = new YT.Player('player', {
+    height: '100',
+    width: '640',
+    videoId: 'M7lc1UVf-VE',
+    controls: 0,
+    events: {
+    'onReady': onPlayerReady,
+    'onStateChange': onPlayerStateChange
+    },
+    playerVars: {
+    start: 50,
+    end: 60,
+    controls: 0,
+    showinfo: 0
 
-// //Holds a reference to the YouTube player
-// var ik_player;
+    }
+    });
+      }
 
-// //this function is called by the API
-// function onYouTubeIframeAPIReady() {
-//   //creates the player object
-//   ik_player = new YT.Player('ik_player_iframe');
-       
-//   console.log('Video API is loaded');
-       
-//   //subscribe to events
-//   ik_player.addEventListener("onReady",       "onYouTubePlayerReady");
-//   ik_player.addEventListener("onStateChange", "onYouTubePlayerStateChange");
-// }
 
-// function onYouTubePlayerReady() {
-//   console.log('Video is ready to play');
-// }
 
-// function onYouTubePlayerStateChange(event) {
-//   console.log('Video state changed');
-// }
 
-// });
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+          // setTimeout(stopVideo, 6000);
+          done = true;
+        }
+        if (event.data == 0) {
+          console.log("next video")
+          // player.seekTo({seconds:120, allowSeekAhead:false})
+          // player.loadVideoById({ videoId: '7Roa3aKnFoE', startSeconds: "5", endSeconds: "10" });
+          player.loadVideoById(randomPlaylist[0][0]);
+
+        }
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+
+
